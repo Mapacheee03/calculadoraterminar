@@ -5,8 +5,8 @@ namespace Calculadora_OGV_
 {
     public partial class MainPage : ContentPage
     {
-        private double numeroUno = 0, numeroDos = 0, numRespuesta = 0;
-        private int operador = 4;
+        private double numeroUno = 0, numRespuesta = 0;
+        private int operador = -1;
         private bool hayPunto = false;
 
         public MainPage()
@@ -58,7 +58,7 @@ namespace Calculadora_OGV_
 
         private void BtnAC(object sender, EventArgs e)
         {
-            numeroUno = 0; numeroDos = 0; numRespuesta = 0; hayPunto = false;
+            numeroUno = 0; numRespuesta = 0; hayPunto = false;
             spnFirst.Text = ""; spnSecond.Text = ""; spnThird.Text = ""; lblNumber.Text = "0";
         }
 
@@ -67,7 +67,7 @@ namespace Calculadora_OGV_
             if (sender is Button button)
             {
                 string operando = button.Text;
-                int valor = 0;
+                int valor = -1;
 
                 switch (operando)
                 {
@@ -85,17 +85,13 @@ namespace Calculadora_OGV_
                         break;
                 }
 
-                IgualarValores(operando, valor);
-                if (!HallarLleno())
+                if (operador != -1)
                 {
-                    spnThird.Text = "";
+                    BtnEquals(sender, e); // Realizar una operación pendiente antes de cambiar el operador.
                 }
-            }
-        }
 
-        private bool HallarLleno()
-        {
-            return string.IsNullOrEmpty(spnFirst.Text) && string.IsNullOrEmpty(spnSecond.Text);
+                IgualarValores(operando, valor);
+            }
         }
 
         private void BtnEquals(object sender, EventArgs e)
@@ -104,13 +100,10 @@ namespace Calculadora_OGV_
             {
                 spnThird.Text = lblNumber.Text;
 
+                double numeroDos = 0;
                 if (double.TryParse(spnThird.Text, out double resultadoSpnThird))
                 {
                     numeroDos = resultadoSpnThird;
-                }
-                else
-                {
-                    numeroDos = 0;
                 }
 
                 switch (operador)
@@ -131,8 +124,8 @@ namespace Calculadora_OGV_
                 }
 
                 lblNumber.Text = numRespuesta.ToString();
-                numeroUno = 0; numeroDos = 0; numRespuesta = 0;
-                operador = 4;
+                numeroUno = numRespuesta;
+                operador = -1;
                 hayPunto = false;
             }
         }
